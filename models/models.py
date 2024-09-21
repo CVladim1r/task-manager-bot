@@ -4,8 +4,8 @@ from tortoise.models import Model
 class User(Model):
     id = fields.IntField(pk=True)
     telegram_id = fields.BigIntField(unique=True)
-    first_name = fields.CharField(max_length=50)
-    last_name = fields.CharField(max_length=50)
+    first_name = fields.CharField(max_length=50, null=True)
+    last_name = fields.CharField(max_length=50, null=True)
 
     tasks_created = fields.ReverseRelation["Task"]
     organizations_created = fields.ReverseRelation["Organization"]
