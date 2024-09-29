@@ -15,6 +15,13 @@ from app.handlers.org_handlers import router as org_router
 from app.handlers.user_handlers import router as user_router
 
 from utils.reminders import send_reminders
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+)
+logger = logging.getLogger(__name__)
 
 TOKEN = os.getenv("BOT_TOKEN")
 DB_URL = os.getenv("DATABASE_URL")
@@ -32,8 +39,10 @@ async def set_bot_commands(bot: Bot):
         BotCommand(command="/start", description="Запуск бота"),
         BotCommand(command="/create_task", description="Создать задачу"),
         BotCommand(command="/list_tasks", description="Список задач"),
-        BotCommand(command="/assign_task", description="Назначить задачу"),
         BotCommand(command="/create_organization", description="Создать организацию"),
+        BotCommand(command="/join_organization", description="Присоединиться к организации"),
+        BotCommand(command="/create_org_task", description="Создать задачу организации"),
+        BotCommand(command="/list_org_tasks", description="Задания организации"),
     ]
     await bot.set_my_commands(commands)
 
