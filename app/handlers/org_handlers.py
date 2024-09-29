@@ -74,17 +74,21 @@ async def join_organization(message: types.Message, state: FSMContext):
 
 @router.message(OrganizationStates.waiting_for_org_code)
 async def process_org_code(message: types.Message, state: FSMContext):
-    code = message.text
+    code = message.text.strip()  # Удаляем лишние пробелы
     try:
-        organization = await Organization.get(code=code)
+        organization = await Organization.get(code=code)  # Ищем организацию по коду
         user = await User.get(telegram_id=message.from_user.id)
 
-        await organization.members.add(user)
-        logger.info(f"User {user.telegram_id} joined organization '{organization.name}'.")
-        await message.answer(f"Вы присоединились к организации '{organization.name}'.")
+        # Проверяем, состоит ли пользователь уже в этой организации
+        if user in await organization.members.all():
+            await message.answer("Вы уже состоите в этой организации.")
+        else:
+            await organization.members.add(user)  # Присоединяем пользователя
+            logger.info(f"User {user.telegram_id} присоединился к организации '{organization.name}'.")
+            await message.answer(f"Вы успешно присоединились к организации '{organization.name}'.")
     except DoesNotExist:
-        logger.warning(f"User {message.from_user.id} attempted to join organization with invalid code: {code}.")
-        await message.reply("Неверный код. Попробуйте снова.")
+        logger.warning(f"User {message.from_user.id} попытался присоединиться к несуществующей организации: {code}.")
+        await message.reply("Неверный код организации. Попробуйте снова.")
 
 @router.message(Command("create_org_task"))
 async def create_task_start(message: types.Message, state: FSMContext):

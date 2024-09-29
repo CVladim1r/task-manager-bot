@@ -42,7 +42,7 @@ async def set_bot_commands(bot: Bot):
         BotCommand(command="/create_organization", description="Создать организацию"),
         BotCommand(command="/join_organization", description="Присоединиться к организации"),
         BotCommand(command="/create_org_task", description="Создать задачу организации"),
-        BotCommand(command="/list_org_tasks", description="Задания организации"),
+        BotCommand(command="/org_tasks", description="Задания организации"),
     ]
     await bot.set_my_commands(commands)
 
